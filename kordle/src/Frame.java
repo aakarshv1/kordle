@@ -29,6 +29,8 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	
 	public static void main(String[] arg) {
 		Frame f = new Frame();
+		//System.out.println(getFullResponse());
+		
 	}
 	
 	//Frame settings
