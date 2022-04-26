@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Map;
 
 import com.google.gson.JsonArray;
@@ -72,14 +73,22 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	                System.out.println(value);
 	            }
 	        }*/
-		String players = "";
+		String players_info = "";
 		try {
-			players = FileUtils.readFileToString(new File("players.json"), StandardCharsets.UTF_8);
+			players_info = FileUtils.readFileToString(new File("players.json"), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println(players);
+		//String cat = "";
+		System.out.println(name(players_info, 2));
+		String[] player_names = new String[50];
+		for (int i = 1; i <=50; i++) {
+			player_names[i-1] = name(players_info, i);
+		}
+		System.out.println(Arrays.toString(player_names));
+		
+		
 	    
 		
 	}
@@ -99,6 +108,15 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		t.start();
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.setVisible(true);	
+	}
+	
+	public static String name(String j, int p) {
+		String cat = "name";
+		String temp1 = j.substring(j.indexOf("player " + p));
+		String temp2 = temp1.substring(temp1.indexOf(cat)+cat.length()+4);
+		String res2 = temp2.substring(0, temp2.indexOf(","));
+		String res1 = temp2.substring(temp2.indexOf(",")+ 2, temp2.indexOf("\""));
+		return res1 + " " + res2;
 	}
 
 	@Override
