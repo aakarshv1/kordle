@@ -84,10 +84,21 @@ class TextAreaFieldEventDemo extends Frame implements KeyListener
 		System.out.println(ke.getKeyCode());
 		if(correct == true) {
 			Name.setForeground(Color.GREEN);
-			Country.setForeground(Color.GREEN);
+			Country.setBackground(Color.GREEN);
+			Handedness.setBackground(Color.GREEN);
+			Titles.setBackground(Color.GREEN);
+			Height.setBackground(Color.GREEN);
+			CurrentRanking.setBackground(Color.GREEN);
+			YearTurnedPro.setBackground(Color.GREEN);
 		}
 		if(correct == false) {
 			Name.setForeground(Color.RED);
+			Country.setBackground(Color.RED);
+			Handedness.setBackground(Color.RED);
+			Titles.setBackground(Color.RED);
+			Height.setBackground(Color.RED);
+			CurrentRanking.setBackground(Color.RED);
+			YearTurnedPro.setBackground(Color.RED);
 		}
 		if(ke.getSource() == Name)
 		{
