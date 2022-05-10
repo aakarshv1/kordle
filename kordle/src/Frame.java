@@ -35,8 +35,10 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		
 	
 	public void paint(Graphics g) {
-		
-		g.drawString("Kordle", 400, 400);
+		//Font stringFont = new Font( "SansSerif", Font. PLAIN, 18 );
+		g.setFont(new Font( "SansSerif", Font.BOLD, 42 ));
+		g.setColor(Color.CYAN);
+		g.drawString("Kordle", 330, 100);
 		
 	}
 	
@@ -98,7 +100,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		JFrame f = new JFrame("Kordle");
 		//Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		f.setSize(800, 1000);
-		//f.setBackground(Color.b);
+		f.setBackground(Color.white);
 		f.add(this);
 		f.setResizable(false);
 		f.setLayout(new GridLayout(1,2));

@@ -8,6 +8,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
@@ -22,12 +25,14 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import org.apache.commons.io.FileUtils;
+
 /**
- * @author David
+ * 
  */
 public class Test {
 	TextField Name;
-	TextArea textArea;
+	//TextArea textArea;
 	TextField Country;
 	TextField Handedness;
 	TextField Titles; 
@@ -35,7 +40,7 @@ public class Test {
 	TextField CurrentRanking;
 	TextField YearTurnedPro;
 	private String x; 
-	private String answer = "hello"; 
+	private String answer = "Carlos Alcaraz"; 
 	private int guess = 1;
 	private boolean correct = false; 
 
@@ -46,7 +51,7 @@ public class Test {
         
 
         JTextField f = new JTextField(10);
-        textArea = new TextArea(5,50); 
+        //textArea = new TextArea(5,50); 
 		Country = new TextField("America");
 		Country.setBounds(50,100,100,30);
 		Handedness = new TextField("Right");
@@ -74,9 +79,23 @@ public class Test {
             @Override
             boolean wordTyped(String typedWord) {
             	
+            	String players_info = "";
+        		try {
+        			players_info = FileUtils.readFileToString(new File("players.json"), StandardCharsets.UTF_8);
+        		} catch (IOException e) {
+        			// TODO Auto-generated catch block
+        			e.printStackTrace();
+        		}
+        		//String cat = "";
+        		//System.out.println(name(players_info, 2));
+        		String[] player_names = new String[50];
+        		for (int i = 1; i <=50; i++) {
+        			player_names[i-1] = name(players_info, i);
+        		}
+            	
                 //create list for dictionary this in your case might be done via calling a method which queries db and returns results as arraylist
                 ArrayList<String> words = new ArrayList<>();
-                words.add("hello");
+                /*words.add("hello");
                 words.add("heritage");
                 words.add("happiness");
                 words.add("goodbye");
@@ -86,19 +105,26 @@ public class Test {
                 words.add("will");
                 words.add("world");
                 words.add("wall");
+                words.add("America");
+                words.add("right");*/
+                for (String x : player_names)
+                	words.add(x);
+                	
                 
                
 
                 setDictionary(words);
             
                 //addToDictionary("bye");//adds a single word
-                if(typedWord.equals( answer)) {
+                if(typedWord.equals(answer)) {
                 	correct = true;
                 }
                 else {
                 	correct = false;
                 }
                 System.out.println(correct);
+                System.out.println(answer);
+                System.out.println(typedWord);
                 if(correct == true) {
                 	f.setBackground(Color.GREEN);  
                 	p.add(Country);
@@ -112,6 +138,7 @@ public class Test {
                 	f.setBackground(Color.RED);
                 }
                 return super.wordTyped(typedWord);//now call super to check for any matches against newest dictionary
+                //return correct;
             }
             
         };
@@ -126,7 +153,20 @@ public class Test {
                 new Test();
             }
         });
+        //String t = "he";
+        //System.out.println(t.charAt(4));
+        
     }
+    
+    
+    public static String name(String j, int p) {
+		String cat = "name";
+		String temp1 = j.substring(j.indexOf("player " + p));
+		String temp2 = temp1.substring(temp1.indexOf(cat)+cat.length()+4);
+		String res2 = temp2.substring(0, temp2.indexOf(","));
+		String res1 = temp2.substring(temp2.indexOf(",")+ 2, temp2.indexOf("\""));
+		return res1 + " " + res2;
+	}
 }
 
 class AutoSuggestor {
@@ -243,6 +283,8 @@ class AutoSuggestor {
             }
         });
     }
+    
+    
 
     private void setFocusToTextField() {
         container.toFront();
@@ -293,7 +335,7 @@ class AutoSuggestor {
     public String getCurrentlyTypedWord() {//get newest word after last white spaceif any or the first word if no white spaces
         String text = textField.getText();
         String wordBeingTyped = "";
-        if (text.contains(" ")) {
+        /*if (text.contains(" ")) {
             int tmp = text.lastIndexOf(" ");
             if (tmp >= currentIndexOfSpace) {
                 currentIndexOfSpace = tmp;
@@ -301,7 +343,8 @@ class AutoSuggestor {
             }
         } else {
             wordBeingTyped = text;
-        }
+        }*/
+        wordBeingTyped = text;
         return wordBeingTyped.trim();
     }
 
