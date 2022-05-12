@@ -52,23 +52,12 @@ public class Test {
 
         JTextField f = new JTextField(10);
         //textArea = new TextArea(5,50); 
-		Country = new TextField("America");
-		Country.setBounds(50,100,100,30);
-		Handedness = new TextField("Right");
-		Handedness.setBounds(50,150,100,30);
-		Titles = new TextField("Titles");
-		Titles.setBounds(50, 200, 100, 30);
-		Height = new TextField("Height");
-		Height.setBounds(150,100,100,30);
-		CurrentRanking = new TextField("Rank");
-		CurrentRanking.setBounds(150,150,100,30);
-		YearTurnedPro = new TextField("Year");
-		YearTurnedPro.setBounds(150,200,100,30);
+		
 		
 		 JPanel p = new JPanel();
 
 	        p.add(f);
-	     
+	        
 
 	        frame.add(p);
 
@@ -92,7 +81,10 @@ public class Test {
         		for (int i = 1; i <=50; i++) {
         			player_names[i-1] = name(players_info, i);
         		}
-            	
+        		String[] player_countries = new String[50];
+        		for (int i = 1; i <=50; i++) {
+        			player_names[i-1] = country(players_info, i);
+        		}
                 //create list for dictionary this in your case might be done via calling a method which queries db and returns results as arraylist
                 ArrayList<String> words = new ArrayList<>();
                 /*words.add("hello");
@@ -114,7 +106,19 @@ public class Test {
                
 
                 setDictionary(words);
-            
+                Country = new TextField("" + player_countries);
+        		Country.setBounds(50,100,100,30);
+        		Handedness = new TextField("Right");
+        		Handedness.setBounds(50,150,100,30);
+        		Titles = new TextField("Titles");
+        		Titles.setBounds(50, 200, 100, 30);
+        		Height = new TextField("Height");
+        		Height.setBounds(150,100,100,30);
+        		CurrentRanking = new TextField("Rank");
+        		CurrentRanking.setBounds(150,150,100,30);
+        		YearTurnedPro = new TextField("Year");
+        		YearTurnedPro.setBounds(150,200,100,30);
+             
                 //addToDictionary("bye");//adds a single word
                 if(typedWord.equals(answer)) {
                 	correct = true;
@@ -125,7 +129,8 @@ public class Test {
                 System.out.println(correct);
                 System.out.println(answer);
                 System.out.println(typedWord);
-                if(correct == true) {
+                if(correct == true) { 
+                	frame.add(p);
                 	f.setBackground(Color.GREEN);  
                 	p.add(Country);
                 	p.add(Handedness);
@@ -160,6 +165,15 @@ public class Test {
     
     
     public static String name(String j, int p) {
+		String cat = "name";
+		String temp1 = j.substring(j.indexOf("player " + p));
+		String temp2 = temp1.substring(temp1.indexOf(cat)+cat.length()+4);
+		String res2 = temp2.substring(0, temp2.indexOf(","));
+		String res1 = temp2.substring(temp2.indexOf(",")+ 2, temp2.indexOf("\""));
+		return res1 + " " + res2;
+	}
+    
+    public static String country(String j, int p) {
 		String cat = "name";
 		String temp1 = j.substring(j.indexOf("player " + p));
 		String temp2 = temp1.substring(temp1.indexOf(cat)+cat.length()+4);
