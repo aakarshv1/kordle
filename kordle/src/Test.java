@@ -1,13 +1,18 @@
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.TextArea;
 import java.awt.TextField;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -30,7 +35,7 @@ import org.apache.commons.io.FileUtils;
 /**
  * 
  */
-public class Test {
+public class Test extends JPanel implements  ActionListener, MouseListener, KeyListener{
 	TextField Name;
 	//TextArea textArea;
 	TextField Country;
@@ -46,8 +51,14 @@ public class Test {
 
     public Test() {
 
-        JFrame frame = new JFrame();
+        JFrame frame = new JFrame("Kordle");
+        //frame.setSize(800, 1000);
+		//frame.setBackground(Color.white);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //frame.add(this);
+		frame.setResizable(true);
+		//frame.setLayout(new GridLayout(1,2));
+		frame.addMouseListener(this);
         
 
         JTextField f = new JTextField(10);
@@ -65,15 +76,16 @@ public class Test {
 		YearTurnedPro = new TextField("Year");
 		YearTurnedPro.setBounds(150,200,100,30);
 		
-		 JPanel p = new JPanel();
+		JPanel p = new JPanel();
 
-	        p.add(f);
-	     
+        p.add(f);
+        //p.setSize(800, 1000);
+     
 
-	        frame.add(p);
+        
 
-	        frame.pack();
-	        frame.setVisible(true);
+        frame.pack();
+        frame.setVisible(true);
 
         AutoSuggestor autoSuggestor = new AutoSuggestor(f, frame, null, Color.WHITE.brighter(), Color.BLUE, Color.RED, 0.75f) {
             @Override
@@ -125,8 +137,10 @@ public class Test {
                 System.out.println(correct);
                 System.out.println(answer);
                 System.out.println(typedWord);
+                //frame.add(p);
                 if(correct == true) {
-                	f.setBackground(Color.GREEN);  
+                	f.setBackground(Color.GREEN); 
+                	
                 	p.add(Country);
                 	p.add(Handedness);
                 	p.add(Titles);
@@ -145,14 +159,23 @@ public class Test {
 
        
     }
+    
+   /* public void paint(Graphics g) {
+		//Font stringFont = new Font( "SansSerif", Font. PLAIN, 18 );
+		g.setFont(new Font( "SansSerif", Font.BOLD, 42 ));
+		g.setColor(Color.CYAN);
+		g.drawString("Kordle", 330, 100);
+		
+	}*/
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
+        /*SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 new Test();
             }
-        });
+        });*/
+    	Test t = new Test();
         //String t = "he";
         //System.out.println(t.charAt(4));
         
@@ -167,7 +190,63 @@ public class Test {
 		String res1 = temp2.substring(temp2.indexOf(",")+ 2, temp2.indexOf("\""));
 		return res1 + " " + res2;
 	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
 }
+
+
 
 class AutoSuggestor {
 
