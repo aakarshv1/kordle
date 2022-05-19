@@ -24,7 +24,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-
+import javax.swing.BorderFactory;
 import org.apache.commons.io.FileUtils;
 
 /**
@@ -43,25 +43,30 @@ public class Test {
 	private String answer = "Carlos Alcaraz"; 
 	private int guess = 1;
 	private boolean correct = false; 
-
+	
     public Test() {
 
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setPreferredSize(new Dimension(800, 1000));
         
-
         JTextField f = new JTextField(10);
         //textArea = new TextArea(5,50); 
-		
+        
 		
 		 JPanel p = new JPanel();
-
+		 JLabel label = new JLabel("Guess " + guess + " of 8:");
+	
+		 
+		 p.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "KORDLE"));
+		 	p.add(label);
 	        p.add(f);
+	        
 	        
 
 	        frame.add(p);
 
-	        frame.pack();
+	        frame.pack(); 
 	        frame.setVisible(true);
 
         AutoSuggestor autoSuggestor = new AutoSuggestor(f, frame, null, Color.WHITE.brighter(), Color.BLUE, Color.RED, 0.75f) {
@@ -83,7 +88,7 @@ public class Test {
         		}
         		String[] player_countries = new String[50];
         		for (int i = 1; i <=50; i++) {
-        			player_names[i-1] = country(players_info, i);
+        			player_countries[i-1] = country(players_info, i);
         		}
                 //create list for dictionary this in your case might be done via calling a method which queries db and returns results as arraylist
                 ArrayList<String> words = new ArrayList<>();
@@ -122,6 +127,7 @@ public class Test {
                 //addToDictionary("bye");//adds a single word
                 if(typedWord.equals(answer)) {
                 	correct = true;
+                	guess ++; 
                 }
                 else {
                 	correct = false;
@@ -174,12 +180,13 @@ public class Test {
 	}
     
     public static String country(String j, int p) {
-		String cat = "name";
+		String cat = "country";
 		String temp1 = j.substring(j.indexOf("player " + p));
 		String temp2 = temp1.substring(temp1.indexOf(cat)+cat.length()+4);
-		String res2 = temp2.substring(0, temp2.indexOf(","));
-		String res1 = temp2.substring(temp2.indexOf(",")+ 2, temp2.indexOf("\""));
-		return res1 + " " + res2;
+		//String res2 = temp2.substring(0, temp2.indexOf(","));
+		String res1 = temp2.substring(0, temp2.indexOf("\""));
+		return  res1 +" " ;
+		
 	}
 }
 
