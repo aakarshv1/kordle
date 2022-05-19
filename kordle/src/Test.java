@@ -614,3 +614,5 @@ class SuggestionLabel extends JLabel {
         textField.setText(tmp + "");
     }
 }
+
+
