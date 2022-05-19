@@ -84,11 +84,12 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		}
 		//String cat = "";
 		System.out.println(name(players_info, 2));
+		System.out.println(country(players_info, 11));
 		String[] player_names = new String[50];
 		for (int i = 1; i <=50; i++) {
 			player_names[i-1] = name(players_info, i);
 		}
-		System.out.println(Arrays.toString(player_names));
+		//System.out.println(Arrays.toString(player_names));
 		
 		
 	    
@@ -119,6 +120,14 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		String res2 = temp2.substring(0, temp2.indexOf(","));
 		String res1 = temp2.substring(temp2.indexOf(",")+ 2, temp2.indexOf("\""));
 		return res1 + " " + res2;
+	}
+	
+	public static String country(String j, int p) {
+		String cat = "country";
+		String temp1 = j.substring(j.indexOf("player "+p));
+		String temp2 = temp1.substring(temp1.indexOf(cat)+cat.length()+4);
+		String res2 = temp2.substring(0, temp2.indexOf("\""));
+		return res2;
 	}
 
 	@Override

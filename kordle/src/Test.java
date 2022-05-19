@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -26,6 +27,7 @@ import javax.swing.JTextField;
 import javax.swing.JWindow;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -35,7 +37,7 @@ import org.apache.commons.io.FileUtils;
 /**
  * 
  */
-public class Test extends JPanel implements  ActionListener, MouseListener, KeyListener{
+public class Test implements KeyListener, ActionListener{
 	TextField Name;
 	//TextArea textArea;
 	TextField Country;
@@ -45,26 +47,38 @@ public class Test extends JPanel implements  ActionListener, MouseListener, KeyL
 	TextField CurrentRanking;
 	TextField YearTurnedPro;
 	private String x; 
-	private String answer = "Carlos Alcaraz"; 
+	private int answer = 11; 
 	private int guess = 1;
 	private boolean correct = false; 
+	private boolean pressed = false;
+	private static String players_info = "";
+	String[] player_names = new String[50];
+	JTextField f = new JTextField(10);
+	JFrame frame = new JFrame("Kordle");
+	JPanel p = new JPanel();
 
     public Test() {
 
-        JFrame frame = new JFrame("Kordle");
-        //frame.setSize(800, 1000);
-		//frame.setBackground(Color.white);
+        
+        frame.setPreferredSize(new Dimension(800, 1000));
+		frame.setBackground(Color.white);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //frame.add(this);
 		frame.setResizable(true);
+		
+		
 		//frame.setLayout(new GridLayout(1,2));
-		frame.addMouseListener(this);
+		
         
 
-        JTextField f = new JTextField(10);
+        
+        f.addKeyListener(this);
+        f.addActionListener(this);
+        Timer t = new Timer(40, this);
+		t.start();
         //textArea = new TextArea(5,50); 
-		Country = new TextField("America");
-		Country.setBounds(50,100,100,30);
+		//TextField Country = new TextField("country");
+		//Country.setBounds(50,100,100,30);
 		Handedness = new TextField("Right");
 		Handedness.setBounds(50,150,100,30);
 		Titles = new TextField("Titles");
@@ -76,34 +90,44 @@ public class Test extends JPanel implements  ActionListener, MouseListener, KeyL
 		YearTurnedPro = new TextField("Year");
 		YearTurnedPro.setBounds(150,200,100,30);
 		
-		JPanel p = new JPanel();
+		
+		
+		p.add(new JLabel("Kordle"));
 
         p.add(f);
+        p.setBackground(Color.white);
         //p.setSize(800, 1000);
      
-
+        frame.add(p);
         
 
         frame.pack();
         frame.setVisible(true);
+        
+        
+		try {
+			players_info = FileUtils.readFileToString(new File("players.json"), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//String cat = "";
+		//System.out.println(name(players_info, 2));
+		
+		for (int i = 1; i <=50; i++) {
+			player_names[i-1] = name(players_info, i);
+		}
+		
+		
+			
+		
+	
 
         AutoSuggestor autoSuggestor = new AutoSuggestor(f, frame, null, Color.WHITE.brighter(), Color.BLUE, Color.RED, 0.75f) {
             @Override
             boolean wordTyped(String typedWord) {
             	
-            	String players_info = "";
-        		try {
-        			players_info = FileUtils.readFileToString(new File("players.json"), StandardCharsets.UTF_8);
-        		} catch (IOException e) {
-        			// TODO Auto-generated catch block
-        			e.printStackTrace();
-        		}
-        		//String cat = "";
-        		//System.out.println(name(players_info, 2));
-        		String[] player_names = new String[50];
-        		for (int i = 1; i <=50; i++) {
-        			player_names[i-1] = name(players_info, i);
-        		}
+            	
             	
                 //create list for dictionary this in your case might be done via calling a method which queries db and returns results as arraylist
                 ArrayList<String> words = new ArrayList<>();
@@ -122,43 +146,57 @@ public class Test extends JPanel implements  ActionListener, MouseListener, KeyL
                 for (String x : player_names)
                 	words.add(x);
                 	
+                //f.setBackground(Color.white);
                 
                
 
                 setDictionary(words);
             
-                //addToDictionary("bye");//adds a single word
-                if(typedWord.equals(answer)) {
-                	correct = true;
-                }
-                else {
-                	correct = false;
-                }
-                System.out.println(correct);
-                System.out.println(answer);
-                System.out.println(typedWord);
-                //frame.add(p);
-                if(correct == true) {
-                	f.setBackground(Color.GREEN); 
-                	
-                	p.add(Country);
-                	p.add(Handedness);
-                	p.add(Titles);
-                	p.add(Height);
-                	p.add(CurrentRanking);
-                	p.add(YearTurnedPro);
-                }
-                if(correct == false) {
-                	f.setBackground(Color.RED);
-                }
+                
+                    
+                
                 return super.wordTyped(typedWord);//now call super to check for any matches against newest dictionary
                 //return correct;
             }
-            
         };
+            
+        }
+    
+    	public void check() {
+    		String text = f.getText();
+			if(text.equals(name(players_info, answer))) {
+	        	correct = true;
+	        }
+	        else {
+	        	correct = false;
+	        }
+	        System.out.println(correct);
+	        System.out.println(answer);
+	        System.out.println(text);
+	        //frame.add(p);
+	        TextField Country = new TextField(country(players_info, name2number(players_info, text)));
+	        Country.setBounds(50,100,100,30);
+	        if(correct) {
+	            	f.setBackground(Color.GREEN); 
+	            	
+	            }
+	            if(correct == false) {
+	            	f.setBackground(Color.RED);
+	            }
+	            
+	            frame.add(p);
+            	
+        		
+            	p.add(Country);
+            	p.add(Handedness);
+            	p.add(Titles);
+            	p.add(Height);
+            	p.add(CurrentRanking);
+            	p.add(YearTurnedPro);
+    	}
 
        
-    }
+    
     
    /* public void paint(Graphics g) {
 		//Font stringFont = new Font( "SansSerif", Font. PLAIN, 18 );
@@ -190,11 +228,33 @@ public class Test extends JPanel implements  ActionListener, MouseListener, KeyL
 		String res1 = temp2.substring(temp2.indexOf(",")+ 2, temp2.indexOf("\""));
 		return res1 + " " + res2;
 	}
+    
+    public static String country(String j, int p) {
+		String cat = "country";
+		String temp1 = j.substring(j.indexOf("player "+p));
+		String temp2 = temp1.substring(temp1.indexOf(cat)+cat.length()+4);
+		String res2 = temp2.substring(0, temp2.indexOf("\""));
+		return res2;
+	}
+    
+    public static int name2number(String j, String name) {
+    	String last = name.substring(name.indexOf(" ") + 1);
+    	String temp = j.substring(0, j.indexOf(last));
+    	while (temp.indexOf("player") != -1) {
+    		temp = temp.substring(temp.indexOf("player") + 7);
+    	}
+    	return Integer.parseInt(temp.substring(0, temp.indexOf("\"")));
+    }
 
 	@Override
-	public void keyPressed(KeyEvent e) {
+	public void keyPressed(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		
+		//pressed = false;
+		if (arg0.getKeyCode() == 10) {
+			//addToDictionary("bye");//adds a single word
+            check();
+            System.out.println("enter");
+		}
 	}
 
 	@Override
@@ -209,42 +269,18 @@ public class Test extends JPanel implements  ActionListener, MouseListener, KeyL
 		
 	}
 
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+
+
 
 	@Override
-	public void mouseEntered(MouseEvent e) {
+	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
 		
 	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+    
+    
 }
+
 
 
 
