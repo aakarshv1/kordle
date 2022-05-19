@@ -56,14 +56,14 @@ public class Test {
 		
 		 JPanel p = new JPanel();
 		 JLabel label = new JLabel("Guess " + guess + " of 8:");
-	
+		 
 		 
 		 p.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "KORDLE"));
 		 	p.add(label);
 	        p.add(f);
 	        
 	        
-
+ 
 	        frame.add(p);
 
 	        frame.pack(); 
@@ -128,6 +128,7 @@ public class Test {
                 if(typedWord.equals(answer)) {
                 	correct = true;
                 	guess ++; 
+                	p.add(label);
                 }
                 else {
                 	correct = false;
