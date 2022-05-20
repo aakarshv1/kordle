@@ -45,7 +45,7 @@ public class Test implements KeyListener, ActionListener{
 	TextField Titles; 
 	TextField Height;
 	TextField CurrentRanking;
-	TextField YearTurnedPro;
+	TextField Age;
 	private String x; 
 	private int answer = 11; 
 	private int guess = 1;
@@ -79,16 +79,7 @@ public class Test implements KeyListener, ActionListener{
         //textArea = new TextArea(5,50); 
 		//TextField Country = new TextField("country");
 		//Country.setBounds(50,100,100,30);
-		Handedness = new TextField("Right");
-		Handedness.setBounds(50,150,100,30);
-		Titles = new TextField("Titles");
-		Titles.setBounds(50, 200, 100, 30);
-		Height = new TextField("Height");
-		Height.setBounds(150,100,100,30);
-		CurrentRanking = new TextField("Rank");
-		CurrentRanking.setBounds(150,150,100,30);
-		YearTurnedPro = new TextField("Year");
-		YearTurnedPro.setBounds(150,200,100,30);
+		
 		
 		
 		
@@ -174,8 +165,18 @@ public class Test implements KeyListener, ActionListener{
 	        System.out.println(answer);
 	        System.out.println(text);
 	        //frame.add(p);
-	        TextField Country = new TextField(country(players_info, name2number(players_info, text)));
+	        Country = new TextField(country(players_info, name2number(players_info, text)));
 	        Country.setBounds(50,100,100,30);
+	        Handedness = new TextField(hand(players_info, name2number(players_info, text)));
+			Handedness.setBounds(50,150,100,30);
+			Titles = new TextField("Titles");
+			Titles.setBounds(50, 200, 100, 30);
+			Height = new TextField(height(players_info, name2number(players_info, text)));
+			Height.setBounds(150,100,100,30);
+			CurrentRanking = new TextField("" + name2number(players_info, text));
+			CurrentRanking.setBounds(150,150,100,30);
+			Age = new TextField(age(players_info, name2number(players_info, text)));
+			Age.setBounds(150,200,100,30);
 	        if(correct) {
 	            	f.setBackground(Color.GREEN); 
 	            	
@@ -192,7 +193,7 @@ public class Test implements KeyListener, ActionListener{
             	p.add(Titles);
             	p.add(Height);
             	p.add(CurrentRanking);
-            	p.add(YearTurnedPro);
+            	p.add(Age);
     	}
 
        
@@ -245,6 +246,40 @@ public class Test implements KeyListener, ActionListener{
     	}
     	return Integer.parseInt(temp.substring(0, temp.indexOf("\"")));
     }
+    
+    public static String hand(String j, int p) {
+		String cat = "handedness";
+		String temp1 = j.substring(j.indexOf("player "+p));
+		String temp2 = temp1.substring(temp1.indexOf(cat)+cat.length()+4);
+		String res2 = temp2.substring(0, temp2.indexOf("\""));
+		return res2;
+	}
+    
+    public static String height(String j, int p) {
+		String cat = "height";
+		String temp1 = j.substring(j.indexOf("player "+p));
+		String temp2 = temp1.substring(temp1.indexOf(cat)+cat.length()+3);
+		String res2 = temp2.substring(0, temp2.indexOf(","));
+		int height = Integer.parseInt(res2);
+		int feet = (int) (height/30.48);
+		double inches = (height/30.48 - feet) * 12;
+		return feet + "'" + Math.round(inches) + "\"";
+		//return res2;
+	}
+    
+    public static String age(String j, int p) {
+		String cat = "date_of_birth";
+		String temp1 = j.substring(j.indexOf("player "+p));
+		String temp2 = temp1.substring(temp1.indexOf(cat)+cat.length()+4);
+		String res2 = temp2.substring(0, temp2.indexOf("\""));
+		int year = Integer.parseInt(res2.substring(0, 4));
+		int age = 2022-year;
+		//double inches = (height/30.48 - feet) * 12;
+		return "" + age;
+		//return res2;
+	}
+    
+    
 
 	@Override
 	public void keyPressed(KeyEvent arg0) {
