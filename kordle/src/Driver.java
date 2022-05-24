@@ -1,3 +1,4 @@
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -5,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.TextArea;
 import java.awt.TextField;
+import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,12 +39,12 @@ import org.apache.commons.io.FileUtils;
 /**
  * 
  */
-public class Test implements KeyListener, ActionListener{
+public class Driver implements KeyListener, ActionListener{
 	TextField Name;
 	//TextArea textArea;
 	TextField Country;
 	TextField Handedness;
-	TextField Titles; 
+	TextField HighestRanking; 
 	TextField Height;
 	TextField CurrentRanking;
 	TextField Age;
@@ -55,12 +57,13 @@ public class Test implements KeyListener, ActionListener{
 	String[] player_names = new String[50];
 	JTextField f = new JTextField(10);
 	JFrame frame = new JFrame("Kordle");
-	JPanel p = new JPanel();
+	JPanel addText = new JPanel();
+	JPanel p = new JPanel(new GridLayout(0, 1, 1, 1));
 
-    public Test() {
+    public Driver() {
 
-        
-        frame.setPreferredSize(new Dimension(800, 1000));
+    	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        frame.setPreferredSize(screenSize);
 		frame.setBackground(Color.white);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //frame.add(this);
@@ -83,11 +86,13 @@ public class Test implements KeyListener, ActionListener{
 		
 		
 		
-		p.add(new JLabel("Kordle"));
+		addText.add(new JLabel("Kordle"));
 
-        p.add(f);
+        addText.add(f);
         p.setBackground(Color.white);
         //p.setSize(800, 1000);
+        
+        p.add(addText);
      
         frame.add(p);
         
@@ -155,6 +160,7 @@ public class Test implements KeyListener, ActionListener{
     
     	public void check() {
     		String text = f.getText();
+    		JLabel pname = new JLabel(text);
 			if(text.equals(name(players_info, answer))) {
 	        	correct = true;
 	        }
@@ -166,34 +172,43 @@ public class Test implements KeyListener, ActionListener{
 	        System.out.println(text);
 	        //frame.add(p);
 	        Country = new TextField(country(players_info, name2number(players_info, text)));
-	        Country.setBounds(50,100,100,30);
+	       // Country.setBounds(50,100,100,30);
 	        Handedness = new TextField(hand(players_info, name2number(players_info, text)));
-			Handedness.setBounds(50,150,100,30);
-			Titles = new TextField("Titles");
-			Titles.setBounds(50, 200, 100, 30);
+			//Handedness.setBounds(150,100,100,30);
+			HighestRanking = new TextField(highest(players_info, name2number(players_info, text)));
+			//HighestRanking.setBounds(250, 100, 100, 30);
 			Height = new TextField(height(players_info, name2number(players_info, text)));
-			Height.setBounds(150,100,100,30);
+			//Height.setBounds(350,100,100,30);
 			CurrentRanking = new TextField("" + name2number(players_info, text));
-			CurrentRanking.setBounds(150,150,100,30);
+			//CurrentRanking.setBounds(450,100,100,30);
 			Age = new TextField(age(players_info, name2number(players_info, text)));
-			Age.setBounds(150,200,100,30);
+			//Age.setBounds(550,100,100,30);
 	        if(correct) {
-	            	f.setBackground(Color.GREEN); 
+	            	f.setBackground(Color.GREEN);
+	            	pname.setForeground(Color.GREEN);
 	            	
 	            }
 	            if(correct == false) {
 	            	f.setBackground(Color.RED);
+	            	pname.setForeground(Color.RED);
 	            }
 	            
-	            frame.add(p);
+	            //frame.add(p);
+	            
+	            JPanel pinfo = new JPanel();
             	
-        		
-            	p.add(Country);
-            	p.add(Handedness);
-            	p.add(Titles);
-            	p.add(Height);
-            	p.add(CurrentRanking);
-            	p.add(Age);
+        		pinfo.add(new JLabel("Guess " + guess + " of 5"));
+            	pinfo.add(Country);
+            	pinfo.add(Handedness);
+            	pinfo.add(HighestRanking);
+            	pinfo.add(Height);
+            	pinfo.add(CurrentRanking);
+            	pinfo.add(Age);
+            	pinfo.add(pname);
+            	p.add(pinfo);
+            	frame.pack();
+                frame.setVisible(true);
+            	
     	}
 
        
@@ -214,7 +229,7 @@ public class Test implements KeyListener, ActionListener{
                 new Test();
             }
         });*/
-    	Test t = new Test();
+    	Driver t = new Driver();
         //String t = "he";
         //System.out.println(t.charAt(4));
         
@@ -267,6 +282,16 @@ public class Test implements KeyListener, ActionListener{
 		//return res2;
 	}
     
+    public static String highest(String j, int p) {
+		String cat = "highest_singles_ranking";
+		String temp1 = j.substring(j.indexOf("player "+p));
+		String temp2 = temp1.substring(temp1.indexOf(cat)+cat.length()+3);
+		String res2 = temp2.substring(0, temp2.indexOf(","));
+		int height = Integer.parseInt(res2);
+		return height + "";
+		//return res2;
+	}
+    
     public static String age(String j, int p) {
 		String cat = "date_of_birth";
 		String temp1 = j.substring(j.indexOf("player "+p));
@@ -274,6 +299,8 @@ public class Test implements KeyListener, ActionListener{
 		String res2 = temp2.substring(0, temp2.indexOf("\""));
 		int year = Integer.parseInt(res2.substring(0, 4));
 		int age = 2022-year;
+		if (Integer.parseInt(res2.substring(5, 7)) > 5)
+			age--;
 		//double inches = (height/30.48 - feet) * 12;
 		return "" + age;
 		//return res2;
@@ -289,6 +316,8 @@ public class Test implements KeyListener, ActionListener{
 			//addToDictionary("bye");//adds a single word
             check();
             System.out.println("enter");
+            guess++;
+            f.setText("");
 		}
 	}
 
