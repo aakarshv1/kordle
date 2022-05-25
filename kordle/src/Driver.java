@@ -1,6 +1,7 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
@@ -40,24 +41,29 @@ import org.apache.commons.io.FileUtils;
  * 
  */
 public class Driver implements KeyListener, ActionListener{
-	TextField Name;
-	//TextArea textArea;
+	
+	
+	//Attributes to aid in guessing
 	TextField Country;
 	TextField Handedness;
 	TextField HighestRanking; 
 	TextField Height;
 	TextField CurrentRanking;
 	TextField Age;
-	private String x; 
+	//private String x; 
 	private int answer = 11; 
 	private int guess = 1;
 	private boolean correct = false; 
-	private boolean pressed = false;
+	//private boolean pressed = false;
 	private static String players_info = "";
 	String[] player_names = new String[50];
-	JTextField f = new JTextField(10);
-	JFrame frame = new JFrame("Kordle");
+	
+	//Main Guess Entry Box
 	JPanel addText = new JPanel();
+	JTextField f = new JTextField(10);
+	
+	JFrame frame = new JFrame("Kordle");
+	
 	JPanel p = new JPanel(new GridLayout(0, 1, 1, 1));
 
     public Driver() {
@@ -66,23 +72,13 @@ public class Driver implements KeyListener, ActionListener{
         frame.setPreferredSize(screenSize);
 		frame.setBackground(Color.white);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //frame.add(this);
+       
 		frame.setResizable(true);
 		
-		
-		//frame.setLayout(new GridLayout(1,2));
-		
-        
-
         
         f.addKeyListener(this);
         f.addActionListener(this);
-        Timer t = new Timer(40, this);
-		t.start();
-        //textArea = new TextArea(5,50); 
-		//TextField Country = new TextField("country");
-		//Country.setBounds(50,100,100,30);
-		
+        
 		
 		
 		
@@ -170,45 +166,121 @@ public class Driver implements KeyListener, ActionListener{
 	        System.out.println(correct);
 	        System.out.println(answer);
 	        System.out.println(text);
-	        //frame.add(p);
+	        
+	        
 	        Country = new TextField(country(players_info, name2number(players_info, text)));
-	       // Country.setBounds(50,100,100,30);
+	        if (Country.getText().equals(country(players_info, answer)))
+	        	Country.setBackground(Color.GREEN);
+	        else
+	        	Country.setBackground(Color.red);
+	        JPanel Countryp = new JPanel(new BorderLayout());
+	        Countryp.add(Country, BorderLayout.NORTH);
+	        JLabel Countryl = new JLabel("Country");
+	        Countryl.setHorizontalAlignment(JLabel.CENTER);
+	        Countryp.add(Countryl, BorderLayout.SOUTH);
+	        
+	       
 	        Handedness = new TextField(hand(players_info, name2number(players_info, text)));
-			//Handedness.setBounds(150,100,100,30);
+	        if (Handedness.getText().equals(hand(players_info, answer)))
+	        	Handedness.setBackground(Color.GREEN);
+	        else
+	        	Handedness.setBackground(Color.red);
+	        
+	        JPanel Handp = new JPanel(new BorderLayout());
+	        Handp.add(Handedness, BorderLayout.NORTH);
+	        JLabel Handl = new JLabel("Handedness");
+	        Handl.setHorizontalAlignment(JLabel.CENTER);
+	        Handp.add(Handl, BorderLayout.SOUTH);
+			
+	        JLabel Highl = new JLabel();
 			HighestRanking = new TextField(highest(players_info, name2number(players_info, text)));
-			//HighestRanking.setBounds(250, 100, 100, 30);
+			if (HighestRanking.getText().equals(highest(players_info, answer)))
+		        HighestRanking.setBackground(Color.GREEN);
+		    else {
+		        HighestRanking.setBackground(Color.red);
+		        if (Integer.parseInt(highest(players_info, answer)) > Integer.parseInt(HighestRanking.getText()))
+		        	Highl.setText("Highest Ranking \u2191");
+		        	
+		    }
+			
+			JPanel Highp = new JPanel(new BorderLayout());
+	        Highp.add(HighestRanking, BorderLayout.NORTH);
+	        
+	        Highl.setHorizontalAlignment(JLabel.CENTER);
+	        Highp.add(Highl, BorderLayout.SOUTH);
+			
 			Height = new TextField(height(players_info, name2number(players_info, text)));
-			//Height.setBounds(350,100,100,30);
+			if (Height.getText().equals(height(players_info, answer)))
+		        Height.setBackground(Color.GREEN);
+		    else
+		        Height.setBackground(Color.red);
+			
+			JPanel Heightp = new JPanel(new BorderLayout());
+	        Heightp.add(Height, BorderLayout.NORTH);
+	        JLabel Heightl = new JLabel("Height");
+	        Heightl.setHorizontalAlignment(JLabel.CENTER);
+	        Heightp.add(Heightl, BorderLayout.SOUTH);
+			
 			CurrentRanking = new TextField("" + name2number(players_info, text));
-			//CurrentRanking.setBounds(450,100,100,30);
+			if (CurrentRanking.getText().equals(answer+""))
+		        CurrentRanking.setBackground(Color.GREEN);
+		    else
+		        CurrentRanking.setBackground(Color.RED);
+			
+			JPanel Currp = new JPanel(new BorderLayout());
+	        Currp.add(CurrentRanking, BorderLayout.NORTH);
+	        JLabel Currl = new JLabel("Current Ranking");
+	        Currl.setHorizontalAlignment(JLabel.CENTER);
+	        Currp.add(Currl, BorderLayout.SOUTH);
+			
 			Age = new TextField(age(players_info, name2number(players_info, text)));
-			//Age.setBounds(550,100,100,30);
+			if (Age.getText().equals(age(players_info, answer)))
+		        Age.setBackground(Color.GREEN);
+		    else
+		        Age.setBackground(Color.red);
+			
+			JPanel Agep = new JPanel(new BorderLayout());
+	        Agep.add(Age, BorderLayout.NORTH);
+	        JLabel Agel = new JLabel("Age");
+	        Agel.setHorizontalAlignment(JLabel.CENTER);
+	        Agep.add(Agel, BorderLayout.SOUTH);
+			
 	        if(correct) {
-	            	f.setBackground(Color.GREEN);
-	            	pname.setForeground(Color.GREEN);
-	            	
-	            }
-	            if(correct == false) {
-	            	f.setBackground(Color.RED);
-	            	pname.setForeground(Color.RED);
-	            }
+	            f.setBackground(Color.GREEN);
+	            pname.setForeground(Color.GREEN); 	
+	        }
+	        
+	        if(correct == false) {
+	            f.setBackground(Color.red);
+	            pname.setForeground(Color.RED);
+	        }
 	            
-	            //frame.add(p);
-	            
-	            JPanel pinfo = new JPanel();
-            	
-        		pinfo.add(new JLabel("Guess " + guess + " of 5"));
-            	pinfo.add(Country);
-            	pinfo.add(Handedness);
-            	pinfo.add(HighestRanking);
-            	pinfo.add(Height);
-            	pinfo.add(CurrentRanking);
-            	pinfo.add(Age);
-            	pinfo.add(pname);
-            	p.add(pinfo);
-            	frame.pack();
-                frame.setVisible(true);
-            	
+            //frame.add(p);
+            FlowLayout fl = new FlowLayout(FlowLayout.CENTER, 20, 20);
+            JPanel pinfo = new JPanel(fl);
+        	
+    		pinfo.add(new JLabel("Guess " + guess + " of 5"));
+        	pinfo.add(Countryp);
+        	pinfo.add(Handp);
+        	pinfo.add(Highp);
+        	pinfo.add(Heightp);
+        	pinfo.add(Currp);
+        	pinfo.add(Agep);
+        	pinfo.add(pname);
+        	p.add(pinfo);
+        	if (correct) {
+        		JLabel win = new JLabel("Congrats, you won in " + guess + " guesses!");
+        		win.setHorizontalAlignment(JLabel.CENTER);
+        		p.add(win);
+        	}
+        	if (!correct && guess == 5) {
+        		JLabel lose = new JLabel("Sorry, you lose :(");
+        		lose.setHorizontalAlignment(JLabel.CENTER);
+        		p.add(lose);
+        	}
+        	frame.pack();
+            frame.setVisible(true);
+        	
     	}
 
        
@@ -312,7 +384,7 @@ public class Driver implements KeyListener, ActionListener{
 	public void keyPressed(KeyEvent arg0) {
 		// TODO Auto-generated method stub
 		//pressed = false;
-		if (arg0.getKeyCode() == 10) {
+		if (arg0.getKeyCode() == 10 && guess < 6) {
 			//addToDictionary("bye");//adds a single word
             check();
             System.out.println("enter");
@@ -334,8 +406,6 @@ public class Driver implements KeyListener, ActionListener{
 	}
 
 
-
-
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
@@ -347,7 +417,10 @@ public class Driver implements KeyListener, ActionListener{
 
 
 
-
+/* Follow code from ...
+ * 	This class allows the user to autocomplete their guesses for convenience.
+ *  It also eliminates incorrect guesses due to spelling errors.
+ */
 class AutoSuggestor {
 
     private final JTextField textField;
