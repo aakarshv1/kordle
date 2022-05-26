@@ -1,5 +1,6 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -31,6 +32,7 @@ import javax.swing.JWindow;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -50,11 +52,12 @@ public class Driver implements KeyListener, ActionListener{
 	TextField Height;
 	TextField CurrentRanking;
 	TextField Age;
-	//private String x; 
-	private int answer = 11; 
+	
+	//randomly pick player
+	private int answer = 1 + (int) (Math.random() * 50); 
 	private int guess = 1;
 	private boolean correct = false; 
-	//private boolean pressed = false;
+	
 	private static String players_info = "";
 	String[] player_names = new String[50];
 	
@@ -64,96 +67,63 @@ public class Driver implements KeyListener, ActionListener{
 	
 	JFrame frame = new JFrame("Kordle");
 	
+	//main JPanel
 	JPanel p = new JPanel(new GridLayout(0, 1, 1, 1));
+	
 
     public Driver() {
-
+    	//Set default font for all objects
+    	setUIFont(new javax.swing.plaf.FontUIResource("Dialog",Font.BOLD,16));
+    	
+    	//frame settings
     	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setPreferredSize(screenSize);
 		frame.setBackground(Color.white);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-       
 		frame.setResizable(true);
-		
-        
         f.addKeyListener(this);
         f.addActionListener(this);
-        
-		
-		
-		
-		addText.add(new JLabel("Kordle"));
-
-        addText.add(f);
-        p.setBackground(Color.white);
-        //p.setSize(800, 1000);
-        
-        p.add(addText);
      
+		//Make guess entry box
+		addText.add(new JLabel("Kordle"));
+        addText.add(f);
+        p.setBackground(Color.white); 
+        p.add(addText);
         frame.add(p);
-        
 
         frame.pack();
         frame.setVisible(true);
         
-        
+        //retrieve player data
 		try {
 			players_info = FileUtils.readFileToString(new File("players.json"), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//String cat = "";
-		//System.out.println(name(players_info, 2));
-		
 		for (int i = 1; i <=50; i++) {
 			player_names[i-1] = name(players_info, i);
 		}
 		
-		
-			
-		
-	
-
+		//add player names to autosuggest dictionary
         AutoSuggestor autoSuggestor = new AutoSuggestor(f, frame, null, Color.WHITE.brighter(), Color.BLUE, Color.RED, 0.75f) {
             @Override
             boolean wordTyped(String typedWord) {
-            	
-            	
-            	
-                //create list for dictionary this in your case might be done via calling a method which queries db and returns results as arraylist
+
                 ArrayList<String> words = new ArrayList<>();
-                /*words.add("hello");
-                words.add("heritage");
-                words.add("happiness");
-                words.add("goodbye");
-                words.add("cruel");
-                words.add("car");
-                words.add("war");
-                words.add("will");
-                words.add("world");
-                words.add("wall");
-                words.add("America");
-                words.add("right");*/
+                words.add("right");
                 for (String x : player_names)
                 	words.add(x);
-                	
-                //f.setBackground(Color.white);
-                
-               
 
                 setDictionary(words);
-            
-                
-                    
                 
                 return super.wordTyped(typedWord);//now call super to check for any matches against newest dictionary
-                //return correct;
+
             }
-        };
-            
+        };    
         }
     
+    	//this method checks if inputted guess is correct
     	public void check() {
     		String text = f.getText();
     		JLabel pname = new JLabel(text);
@@ -163,16 +133,17 @@ public class Driver implements KeyListener, ActionListener{
 	        else {
 	        	correct = false;
 	        }
-	        System.out.println(correct);
-	        System.out.println(answer);
-	        System.out.println(text);
+	        
+	        Color r = new Color(255, 115, 115);
 	        
 	        
+	        //display attributes of guessed player, indicate if correct or not, and for numerical data, indicate
+	        //whether higher or lower than correct attribute
 	        Country = new TextField(country(players_info, name2number(players_info, text)));
 	        if (Country.getText().equals(country(players_info, answer)))
 	        	Country.setBackground(Color.GREEN);
 	        else
-	        	Country.setBackground(Color.red);
+	        	Country.setBackground(r);
 	        JPanel Countryp = new JPanel(new BorderLayout());
 	        Countryp.add(Country, BorderLayout.NORTH);
 	        JLabel Countryl = new JLabel("Country");
@@ -184,7 +155,7 @@ public class Driver implements KeyListener, ActionListener{
 	        if (Handedness.getText().equals(hand(players_info, answer)))
 	        	Handedness.setBackground(Color.GREEN);
 	        else
-	        	Handedness.setBackground(Color.red);
+	        	Handedness.setBackground(r);
 	        
 	        JPanel Handp = new JPanel(new BorderLayout());
 	        Handp.add(Handedness, BorderLayout.NORTH);
@@ -194,54 +165,77 @@ public class Driver implements KeyListener, ActionListener{
 			
 	        JLabel Highl = new JLabel();
 			HighestRanking = new TextField(highest(players_info, name2number(players_info, text)));
-			if (HighestRanking.getText().equals(highest(players_info, answer)))
+			if (HighestRanking.getText().equals(highest(players_info, answer))) {
 		        HighestRanking.setBackground(Color.GREEN);
+		        Highl.setText("Highest Ranking");    
+			}
 		    else {
-		        HighestRanking.setBackground(Color.red);
+		        HighestRanking.setBackground(r);
 		        if (Integer.parseInt(highest(players_info, answer)) > Integer.parseInt(HighestRanking.getText()))
 		        	Highl.setText("Highest Ranking \u2191");
-		        	
+		        else 
+			        Highl.setText("Highest Ranking \u2193");	
 		    }
 			
 			JPanel Highp = new JPanel(new BorderLayout());
 	        Highp.add(HighestRanking, BorderLayout.NORTH);
-	        
 	        Highl.setHorizontalAlignment(JLabel.CENTER);
 	        Highp.add(Highl, BorderLayout.SOUTH);
 			
+	        JLabel Heightl = new JLabel();
 			Height = new TextField(height(players_info, name2number(players_info, text)));
-			if (Height.getText().equals(height(players_info, answer)))
+			if (Height.getText().equals(height(players_info, answer))) {
 		        Height.setBackground(Color.GREEN);
-		    else
-		        Height.setBackground(Color.red);
+		        Heightl.setText("Height");
+			}
+		    else {
+		        Height.setBackground(r);
+		        if (Integer.parseInt(heightcm(players_info, answer)) > Integer.parseInt(heightcm(players_info, name2number(players_info, text))))
+		        	Heightl.setText("Height \u2191");
+		        else
+			        Heightl.setText("Height \u2193");
+		    }
 			
 			JPanel Heightp = new JPanel(new BorderLayout());
 	        Heightp.add(Height, BorderLayout.NORTH);
-	        JLabel Heightl = new JLabel("Height");
 	        Heightl.setHorizontalAlignment(JLabel.CENTER);
 	        Heightp.add(Heightl, BorderLayout.SOUTH);
 			
+	        JLabel Currl = new JLabel();
 			CurrentRanking = new TextField("" + name2number(players_info, text));
-			if (CurrentRanking.getText().equals(answer+""))
+			if (CurrentRanking.getText().equals(answer+"")) {
 		        CurrentRanking.setBackground(Color.GREEN);
-		    else
-		        CurrentRanking.setBackground(Color.RED);
+		        Currl.setText("Current Ranking");
+			}
+		    else {
+		        CurrentRanking.setBackground(r);
+		        if (answer > Integer.parseInt(CurrentRanking.getText()))
+		        	Currl.setText("Current Ranking \u2191");
+		        else
+			        Currl.setText("Current Ranking \u2193");
+		    }
 			
 			JPanel Currp = new JPanel(new BorderLayout());
 	        Currp.add(CurrentRanking, BorderLayout.NORTH);
-	        JLabel Currl = new JLabel("Current Ranking");
 	        Currl.setHorizontalAlignment(JLabel.CENTER);
 	        Currp.add(Currl, BorderLayout.SOUTH);
 			
+	        JLabel Agel = new JLabel();
 			Age = new TextField(age(players_info, name2number(players_info, text)));
-			if (Age.getText().equals(age(players_info, answer)))
+			if (Age.getText().equals(age(players_info, answer))) {
 		        Age.setBackground(Color.GREEN);
-		    else
-		        Age.setBackground(Color.red);
+		        Agel.setText("Age");
+			}
+		    else {
+		        Age.setBackground(r);
+		        if (Integer.parseInt(age(players_info, answer)) > Integer.parseInt(Age.getText()))
+		        	Agel.setText("Age \u2191");
+		        else
+			        Agel.setText("Age \u2193");
+		    }
 			
 			JPanel Agep = new JPanel(new BorderLayout());
 	        Agep.add(Age, BorderLayout.NORTH);
-	        JLabel Agel = new JLabel("Age");
 	        Agel.setHorizontalAlignment(JLabel.CENTER);
 	        Agep.add(Agel, BorderLayout.SOUTH);
 			
@@ -251,14 +245,14 @@ public class Driver implements KeyListener, ActionListener{
 	        }
 	        
 	        if(correct == false) {
-	            f.setBackground(Color.red);
+	            f.setBackground(r);
 	            pname.setForeground(Color.RED);
 	        }
 	            
-            //frame.add(p);
             FlowLayout fl = new FlowLayout(FlowLayout.CENTER, 20, 20);
             JPanel pinfo = new JPanel(fl);
         	
+            //add attributes to main jpanel
     		pinfo.add(new JLabel("Guess " + guess + " of 5"));
         	pinfo.add(Countryp);
         	pinfo.add(Handp);
@@ -268,46 +262,28 @@ public class Driver implements KeyListener, ActionListener{
         	pinfo.add(Agep);
         	pinfo.add(pname);
         	p.add(pinfo);
+        	
+        	//winning or losing messages
         	if (correct) {
-        		JLabel win = new JLabel("Congrats, you won in " + guess + " guesses!");
+        		JLabel win = new JLabel("Congrats, you won in " + guess + " guesses! Press 'r' to play again.");
         		win.setHorizontalAlignment(JLabel.CENTER);
         		p.add(win);
         	}
         	if (!correct && guess == 5) {
-        		JLabel lose = new JLabel("Sorry, you lose :(");
+        		JLabel lose = new JLabel("Sorry, you lose :( The correct answer was " + name(players_info, answer) + ". Press 'r' to try again.");
         		lose.setHorizontalAlignment(JLabel.CENTER);
         		p.add(lose);
         	}
         	frame.pack();
             frame.setVisible(true);
-        	
     	}
 
-       
-    
-    
-   /* public void paint(Graphics g) {
-		//Font stringFont = new Font( "SansSerif", Font. PLAIN, 18 );
-		g.setFont(new Font( "SansSerif", Font.BOLD, 42 ));
-		g.setColor(Color.CYAN);
-		g.drawString("Kordle", 330, 100);
-		
-	}*/
-
+    //main method allows program to run
     public static void main(String[] args) {
-        /*SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new Test();
-            }
-        });*/
     	Driver t = new Driver();
-        //String t = "he";
-        //System.out.println(t.charAt(4));
-        
     }
     
-    
+    //these methods retrieve specific attributes from the player data to eventually be displayed
     public static String name(String j, int p) {
 		String cat = "name";
 		String temp1 = j.substring(j.indexOf("player " + p));
@@ -354,6 +330,14 @@ public class Driver implements KeyListener, ActionListener{
 		//return res2;
 	}
     
+    public static String heightcm(String j, int p) {
+		String cat = "height";
+		String temp1 = j.substring(j.indexOf("player "+p));
+		String temp2 = temp1.substring(temp1.indexOf(cat)+cat.length()+3);
+		String res2 = temp2.substring(0, temp2.indexOf(","));
+		return res2;
+	}
+    
     public static String highest(String j, int p) {
 		String cat = "highest_singles_ranking";
 		String temp1 = j.substring(j.indexOf("player "+p));
@@ -379,17 +363,37 @@ public class Driver implements KeyListener, ActionListener{
 	}
     
     
-
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		//pressed = false;
+		
+		//if enter is pressed then guess is inputed
 		if (arg0.getKeyCode() == 10 && guess < 6) {
-			//addToDictionary("bye");//adds a single word
             check();
             System.out.println("enter");
             guess++;
             f.setText("");
+		}
+		
+		//if r is pressed the game resets by removing all the components from the jpanel except the first one
+		if (arg0.getKeyCode() == 82 && guess > 5) {
+			guess = 1;
+			//Get the components in the panel
+			Component[] componentList = p.getComponents();
+
+			for(Component c : componentList){
+			    if(!c.equals(addText)){
+			        p.remove(c);
+			    }
+			}
+
+			p.revalidate();
+			p.repaint();
+			
+			//new random player
+			answer = 1 + (int) (Math.random() * 50);
+			f.setBackground(Color.WHITE);
+			f.setText("");
 		}
 	}
 
@@ -405,22 +409,30 @@ public class Driver implements KeyListener, ActionListener{
 		
 	}
 
-
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
 		
 	}
     
+	//this method allows us to change the default font for all swing objects, which is much easier than manually changing everything
+	public static void setUIFont (javax.swing.plaf.FontUIResource f){
+	    java.util.Enumeration keys = UIManager.getDefaults().keys();
+	    while (keys.hasMoreElements()) {
+	      Object key = keys.nextElement();
+	      Object value = UIManager.get (key);
+	      if (value instanceof javax.swing.plaf.FontUIResource)
+	        UIManager.put (key, f);
+	      }
+	}
     
 }
 
-
-
-/* Follow code from ...
+/* Following code is from
  * 	This class allows the user to autocomplete their guesses for convenience.
  *  It also eliminates incorrect guesses due to spelling errors.
  */
+
 class AutoSuggestor {
 
     private final JTextField textField;
@@ -751,5 +763,6 @@ class SuggestionLabel extends JLabel {
         textField.setText(tmp + "");
     }
 }
+
 
 
