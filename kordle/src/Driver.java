@@ -105,7 +105,7 @@ public class Driver implements KeyListener, ActionListener{
 			player_names[i-1] = name(players_info, i);
 		}
 		
-		//add player names to autosuggest dictionary
+		//add player names to autosuggest dictionary (see autosuggestor class at the bottom)
         AutoSuggestor autoSuggestor = new AutoSuggestor(f, frame, null, Color.WHITE.brighter(), Color.BLUE, Color.RED, 0.75f) {
             @Override
             boolean wordTyped(String typedWord) {
@@ -428,7 +428,7 @@ public class Driver implements KeyListener, ActionListener{
     
 }
 
-/* Following code is from
+/*  Following code is from https://stackoverflow.com/questions/14186955/create-a-autocompleting-textbox-in-java-with-a-dropdown-list
  * 	This class allows the user to autocomplete their guesses for convenience.
  *  It also eliminates incorrect guesses due to spelling errors.
  */
