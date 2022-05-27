@@ -111,7 +111,6 @@ public class Driver implements KeyListener, ActionListener{
             boolean wordTyped(String typedWord) {
 
                 ArrayList<String> words = new ArrayList<>();
-                words.add("right");
                 for (String x : player_names)
                 	words.add(x);
 
